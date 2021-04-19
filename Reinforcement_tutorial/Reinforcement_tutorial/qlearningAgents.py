@@ -26,7 +26,7 @@ class QLearningAgent(ReinforcementAgent):
         self.actions = {"north":0, "east":1, "south":2, "west":3, "exit":4}
         self.table_file = open("qtable.txt", "r+")
         self.q_table = self.readQtable()
-        self.epsilon = 1
+        self.epsilon = 0.05
 
     def readQtable(self):
         "Read qtable from disc"
@@ -78,6 +78,7 @@ class QLearningAgent(ReinforcementAgent):
         action_column = self.actions[action]
 
         return self.q_table[position][action_column]
+
 
 
     def computeValueFromQValues(self, state):
@@ -155,17 +156,28 @@ class QLearningAgent(ReinforcementAgent):
         Q(state,action) <- (1-self.alpha) Q(state,action) + self.alpha * (r + self.discount * max a' Q(nextState, a'))
 
         """
-        # TRACE for transition and position to update. Comment the following lines if you do not want to see that trace
+       
+       # TRACE for transition and position to update. Comment the following lines if you do not want to see that trace
         print("Update Q-table with transition: ", state, action, nextState, reward)
         position = self.computePosition(state)
         action_column = self.actions[action]
-    
+        
         print("Corresponding Q-table cell to update:", position, action_column)
         position = self.computePosition(state)
-        
-        
+
+
         "*** YOUR CODE HERE ***"
 
+
+        
+
+       
+        qValue = self.getQValue(state, action)
+        position = self.computePosition(state)
+        print (position)
+        action_column = self.actions[action]
+        self.q_table[position][action_column] = (1-self.alpha)*qValue + self.alpha* (reward + self.discount*self.computeValueFromQValues(nextState))
+        
         # TRACE for updated q-table. Comment the following lines if you do not want to see that trace
         print("Q-table:")
         self.printQtable()
