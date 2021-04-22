@@ -166,17 +166,23 @@ class QLearningAgent(ReinforcementAgent):
         position = self.computePosition(state)
 
 
-        "*** YOUR CODE HERE ***"
+        '''*** YOUR CODE HERE
+        if terminal_state:
+        Q(state,action) <- (1-self.alpha) Q(state,action) + self.alpha * (r + 0)
+        else:
+        Q(state,action) <- (1-self.alpha) Q(state,action) + self.alpha * (r + self.discount * max a' Q(nextState, a'))
+        '''
+        if(state != nextState):
+            qValue = self.getQValue(state, action)
+            position_row = self.computePosition(state)
+            action_column = self.actions[action]
 
-
-        
-
-       
-        qValue = self.getQValue(state, action)
-        position = self.computePosition(state)
-        print (position)
-        action_column = self.actions[action]
-        self.q_table[position][action_column] = (1-self.alpha)*qValue + self.alpha* (reward + self.discount*self.computeValueFromQValues(nextState))
+            legalActions = self.getLegalActions(state)
+            #Si no hay actions --> Estamos en estado terminal
+            if len(legalActions)==0:
+                self.q_table[position_row][action_column] = (1-self.alpha)*qValue + self.alpha* (reward + 0)
+            else:
+                self.q_table[position_row][action_column] = (1-self.alpha)*qValue + self.alpha* (reward + self.discount*self.getValue(nextState))
         
         # TRACE for updated q-table. Comment the following lines if you do not want to see that trace
         print("Q-table:")
